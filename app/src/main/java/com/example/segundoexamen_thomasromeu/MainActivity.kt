@@ -1,13 +1,17 @@
 package com.example.segundoexamen_thomasromeu
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.Intent
+import android.media.AudioManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.widget.Button
+import android.widget.ImageButton
 import android.widget.TextView
 import android.widget.Toast
+import android.widget.VideoView
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -18,6 +22,9 @@ class MainActivity : AppCompatActivity() {
     private lateinit var textViewJokesRandom: TextView
     private lateinit var buttonRandomJoke: Button
     private lateinit var buttonCategories: Button
+    private lateinit var videoView: VideoView
+    private lateinit var buttonMute : ImageButton
+    private var isMuted: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -26,6 +33,22 @@ class MainActivity : AppCompatActivity() {
         textViewJokesRandom = findViewById(R.id.textViewJokesRandom)
         buttonRandomJoke = findViewById(R.id.buttonRandomJoke)
         buttonCategories = findViewById(R.id.buttonGoToCategories)
+        videoView = findViewById(R.id.videoView3)
+        buttonMute = findViewById(R.id.buttonMute)
+
+        videoView.setVideoPath("android.resource://"+packageName+"/"+R.raw.chucknorris)
+
+        videoView.start()
+
+        buttonMute.setOnClickListener {
+            if (!isMuted) {
+                muteVideo()
+                isMuted = true
+            } else {
+                unmuteVideo()
+                isMuted = false
+            }
+        }
 
         buttonRandomJoke.setOnClickListener {
             getRandomJoke()
@@ -37,6 +60,17 @@ class MainActivity : AppCompatActivity() {
 
     }
 
+    private fun muteVideo() {
+        val audioManager = getSystemService(Context.AUDIO_SERVICE) as AudioManager
+        val originalVolume = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC)
+        audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, 0, 0)
+    }
+
+    private fun unmuteVideo() {
+        val audioManager = getSystemService(Context.AUDIO_SERVICE) as AudioManager
+        val maxVolume = audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC)
+        audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, maxVolume, 0)
+    }
     private fun goToCategories() {
         val intent = Intent(this, CategoriesActivity::class.java)
         startActivity(intent)
