@@ -1,11 +1,8 @@
 package com.example.segundoexamen_thomasromeu
 
-import android.annotation.SuppressLint
-import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import kotlinx.coroutines.CoroutineScope
@@ -14,37 +11,24 @@ import kotlinx.coroutines.launch
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
-class MainActivity : AppCompatActivity() {
+class JokesActivity : AppCompatActivity() {
+    private lateinit var categoria: String
     private lateinit var textViewJokesRandom: TextView
-    private lateinit var buttonRandomJoke: Button
-    private lateinit var buttonCategories: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        setContentView(R.layout.activity_jokes)
 
-        textViewJokesRandom = findViewById(R.id.textViewJokesRandom)
-        buttonRandomJoke = findViewById(R.id.buttonRandomJoke)
-        buttonCategories = findViewById(R.id.buttonGoToCategories)
+        textViewJokesRandom = findViewById(R.id.textViewJokeByCategory)
 
-        buttonRandomJoke.setOnClickListener {
-            getRandomJoke()
-        }
+        categoria = intent.getStringExtra("categoria") ?: ""
 
-        buttonCategories.setOnClickListener {
-            goToCategories()
-        }
-
+        getRandomJokeByCategory(categoria)
     }
 
-    private fun goToCategories() {
-        val intent = Intent(this, CategoriesActivity::class.java)
-        startActivity(intent)
-    }
-
-    private fun getRandomJoke() {
+    private fun getRandomJokeByCategory(categoria: String) {
         CoroutineScope(Dispatchers.IO).launch {
-            val call = getRetrofit().create(ApiService::class.java).getRandomJoke()
+            val call = getRetrofit().create(ApiService::class.java).getRandomJokeByCategory("random?category=$categoria")
             val response = call.body()
 
             runOnUiThread {
@@ -52,22 +36,19 @@ class MainActivity : AppCompatActivity() {
                     val joke = response?.jokes ?: "No hay chiste"
                     textViewJokesRandom.text = joke
                 } else {
-                    Toast.makeText(this@MainActivity, "Error al obtener un chiste", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this@JokesActivity, "Error al obtener un chiste", Toast.LENGTH_SHORT).show()
                     val error = call.errorBody().toString()
                     Log.e("error", error)
                 }
             }
+
         }
     }
 
     private fun getRetrofit(): Retrofit {
         return Retrofit.Builder()
-            .baseUrl(URL_CHUCKNORRIS)
+            .baseUrl("https://api.chucknorris.io/jokes/")
             .addConverterFactory(GsonConverterFactory.create())
             .build()
-    }
-
-    companion object {
-        const val URL_CHUCKNORRIS = "https://api.chucknorris.io/jokes/"
     }
 }

@@ -15,6 +15,9 @@
         android:theme="@style/Theme.SegundoExamen_ThomasRomeu"
         tools:targetApi="31">
         <activity
+            android:name=".JokesActivity"
+            android:exported="false" />
+        <activity
             android:name=".CategoriesActivity"
             android:exported="false" />
         <activity
