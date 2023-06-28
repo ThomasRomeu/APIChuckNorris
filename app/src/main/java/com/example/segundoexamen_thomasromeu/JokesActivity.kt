@@ -1,8 +1,10 @@
 package com.example.segundoexamen_thomasromeu
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import kotlinx.coroutines.CoroutineScope
@@ -14,16 +16,30 @@ import retrofit2.converter.gson.GsonConverterFactory
 class JokesActivity : AppCompatActivity() {
     private lateinit var categoria: String
     private lateinit var textViewJokesRandom: TextView
+    private lateinit var buttonNextJoke: Button
+    private lateinit var buttonBackToCategories: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_jokes)
 
         textViewJokesRandom = findViewById(R.id.textViewJokeByCategory)
+        buttonNextJoke = findViewById(R.id.buttonNextJoke)
+        buttonBackToCategories = findViewById(R.id.buttonBackToCategories)
 
         categoria = intent.getStringExtra("categoria") ?: ""
 
         getRandomJokeByCategory(categoria)
+
+        buttonNextJoke.setOnClickListener {
+            getRandomJokeByCategory(categoria)
+        }
+
+        buttonBackToCategories.setOnClickListener {
+            val intent = Intent(this, CategoriesActivity::class.java)
+            startActivity(intent)
+            finish()
+        }
     }
 
     private fun getRandomJokeByCategory(categoria: String) {
