@@ -64,12 +64,14 @@ class MainActivity : AppCompatActivity() {
         val audioManager = getSystemService(Context.AUDIO_SERVICE) as AudioManager
         val originalVolume = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC)
         audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, 0, 0)
+        buttonMute.setImageResource(R.drawable.volumeoff)
     }
 
     private fun unmuteVideo() {
         val audioManager = getSystemService(Context.AUDIO_SERVICE) as AudioManager
         val maxVolume = audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC)
         audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, maxVolume, 0)
+        buttonMute.setImageResource(R.drawable.volumeon)
     }
     private fun goToCategories() {
         val intent = Intent(this, CategoriesActivity::class.java)
