@@ -7,6 +7,3 @@ data class JokesRandom (
     @SerializedName("value") val jokes: String
 )
 
-data class JokesCategories (
-    val categories: Map<String, List<String>>
-)
